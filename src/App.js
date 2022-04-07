@@ -1,23 +1,30 @@
-import logo from './logo.svg';
+
 import './App.css';
+import { getAuth } from "firebase/auth";
+import app from './firebase.init';
+const auth = getAuth(app);
 
 function App() {
+
+  const handelEmailBlur= (event) => {
+    console.log(event.target.value);
+  }
+  const handelPasswordBlur = (event) => {
+    console.log(event.target.value);
+  }
+  const handelFormSubmit = (event) => {
+    console.log('form submited');
+    event.preventDefault();
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <form onSubmit={handelFormSubmit}>
+        <input onBlur={handelEmailBlur} type="email" name="" id="" />
+        <br />
+        <input onBlur={handelPasswordBlur} type="password" name="" id="" />
+        <br />
+        <input type="submit" value="Login" />
+     </form>
     </div>
   );
 }

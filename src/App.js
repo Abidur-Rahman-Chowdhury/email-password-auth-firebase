@@ -1,30 +1,73 @@
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import app from "./firebase.init";
+import { Button, Form } from "react-bootstrap";
+import { useState } from "react";
 
-import './App.css';
-import { getAuth } from "firebase/auth";
-import app from './firebase.init';
 const auth = getAuth(app);
 
 function App() {
-
-  const handelEmailBlur= (event) => {
-    console.log(event.target.value);
-  }
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [validated, setValidated] = useState(false);
+  const handelEmailBlur = (event) => {
+    setEmail(event.target.value);
+    event.target.value = '';
+  };
   const handelPasswordBlur = (event) => {
-    console.log(event.target.value);
-  }
+    setPassword(event.target.value);
+    event.target.value = '';
+  };
   const handelFormSubmit = (event) => {
-    console.log('form submited');
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+
+    }
+
+    setValidated(true);
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(result => {
+        const user = result.user;
+        console.log(user);
+      })
+      .catch(error => {
+        console.error('error', error);
+    })
+    console.log("form submited");
     event.preventDefault();
-  }
+  };
   return (
-    <div className="App">
-      <form onSubmit={handelFormSubmit}>
-        <input onBlur={handelEmailBlur} type="email" name="" id="" />
-        <br />
-        <input onBlur={handelPasswordBlur} type="password" name="" id="" />
-        <br />
-        <input type="submit" value="Login" />
-     </form>
+    <div >
+      <div className="w-50 mx-auto border border-3 rounded-5 mt-5 p-4">
+        <h2 className="text-primary">Please Register!!</h2>
+        <Form noValidate validated={validated} onSubmit={handelFormSubmit}>
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control onBlur={handelEmailBlur} type="email" placeholder="Enter email" required />
+            <Form.Control.Feedback type="invalid">
+            Please provide a valid email.
+          </Form.Control.Feedback>
+            <Form.Text className="text-muted">
+              We'll never share your email with anyone else.
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control onBlur={handelPasswordBlur} type="password" placeholder="Password" required />
+            <Form.Control.Feedback type="invalid">
+            Please provide a valid password.
+          </Form.Control.Feedback>
+          </Form.Group>
+          
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </Form>
+      </div>
     </div>
   );
 }
